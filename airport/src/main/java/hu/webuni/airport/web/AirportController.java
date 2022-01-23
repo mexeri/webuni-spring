@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +16,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import hu.webuni.airport.dto.AirportDto;
+import hu.webuni.airport.service.NonUniqueIataException;
 
 @RestController
 @RequestMapping("/api/airports")
@@ -34,18 +38,22 @@ public class AirportController {
 	 }
 	 
 	 @GetMapping("/{id}")
-	 public ResponseEntity<AirportDto> getById(@PathVariable long id)
+	 public AirportDto getById(@PathVariable long id)
 	 {
 		 AirportDto airportDto = airports.get(id);
-		 if(airportDto!=null)
-			return ResponseEntity.ok(airportDto);
-		 
-		 return ResponseEntity.notFound().build(); 
+//		 if(airportDto!=null)
+//			return ResponseEntity.ok(airportDto);
+//		 
+//		 return ResponseEntity.notFound().build();
+		 if(airportDto != null)
+			 return airportDto;
+		 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	 }
 	 
 	 @PostMapping
 	 public AirportDto createAirport(@RequestBody AirportDto airportDto)
 	 {
+		 CheckUniqueIata(airportDto.getsIata());
 		 airports.put(airportDto.getLid(), airportDto);
 		 return airportDto;
 	 }
@@ -57,13 +65,20 @@ public class AirportController {
 		 {
 			 return ResponseEntity.notFound().build();
 		 }
+		 CheckUniqueIata(airportDto.getsIata());
 		 airportDto.setLid(id);
 		 airports.put(id, airportDto);
-		 return ResponseEntity.ok(airportDto); 
-		 
+		 return ResponseEntity.ok(airportDto);
+		 		 
 	 }
 	 
-	 @DeleteMapping("/{id}")
+	 private void CheckUniqueIata(String sIata) {
+		Optional<AirportDto> airportWithSameIata = airports.values().stream().filter(a -> a.getsIata().equals(sIata)).findAny();
+		if(airportWithSameIata.isPresent())
+			throw new NonUniqueIataException(sIata);
+	}
+
+	@DeleteMapping("/{id}")
 	 public void deleteAirport(@PathVariable long id)
 	 {
 		 airports.remove(id);
