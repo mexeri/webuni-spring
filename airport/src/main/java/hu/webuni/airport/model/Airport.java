@@ -1,9 +1,17 @@
 package hu.webuni.airport.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.Size;
 
+@Entity
+@NamedQuery(name="Airport.countByIata", query = "SELECT COUNT(a.id) from Airport a WHERE a.sIata = :sIata")
 public class Airport 
 {
+	@Id
+	@GeneratedValue 
 	private long lid;
 	
 	@Size(min = 3, max = 20)
