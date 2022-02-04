@@ -15,4 +15,5 @@ public interface AirportMapper {
 	AirportDto airportToDto(Airport airport);
 
 	Airport dtoToAirport(AirportDto airportDto);
+	
 }

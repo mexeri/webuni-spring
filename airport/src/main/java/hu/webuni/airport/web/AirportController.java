@@ -65,6 +65,7 @@ public class AirportController {
 	 public ResponseEntity<AirportDto> modifyAirport(@PathVariable long id, @RequestBody AirportDto airportDto)
 	 {
 		 Airport airport= airportMapper.dtoToAirport(airportDto);
+		 airport.setLid(id);
 		 AirportDto savedAirportDto = airportMapper.airportToDto(airportService.update(airport));
 
 		 return ResponseEntity.ok(savedAirportDto);
