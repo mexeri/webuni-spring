@@ -7,16 +7,17 @@ import javax.persistence.NamedQuery;
 import javax.validation.constraints.Size;
 
 @Entity
-@NamedQuery(name="Airport.countByIata", query = "SELECT COUNT(a.id) from Airport a WHERE a.sIata = :sIata")
+//@NamedQuery(name="Airport.countByIata", query = "SELECT COUNT(a.id) from Airport a WHERE a.sIata = :sIata")
+//@NamedQuery(name="Airport.countByIataAndIdNotIn", query = "SELECT COUNT(a.id) from Airport a WHERE a.sIata = :sIata AND a.id != :id")
 public class Airport 
 {
 	@Id
 	@GeneratedValue 
-	private long lid;
+	private long id;
 	
 	@Size(min = 3, max = 20)
-	private String sName;
-	private String sIata;
+	private String name;
+	private String iata;
 	
 	public Airport()
 	{
@@ -24,28 +25,28 @@ public class Airport
 	
 	public Airport(long lid, String sName, String sIata) {
 		super();
-		this.lid = lid;
-		this.sName = sName;
-		this.sIata = sIata;
+		this.id = lid;
+		this.name = sName;
+		this.iata = sIata;
 	}
 	
 	
 	public long getLid() {
-		return lid;
+		return id;
 	}
 	public void setLid(long lid) {
-		this.lid = lid;
+		this.id = lid;
 	}
 	public String getsName() {
-		return sName;
+		return name;
 	}
 	public void setsName(String sName) {
-		this.sName = sName;
+		this.name = sName;
 	}
 	public String getsIata() {
-		return sIata;
+		return iata;
 	}
 	public void setsIata(String sIata) {
-		this.sIata = sIata;
+		this.iata = sIata;
 	}
 }

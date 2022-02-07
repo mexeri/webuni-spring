@@ -47,11 +47,9 @@ public class AirportController {
 	 @GetMapping("/{id}")
 	 public AirportDto getById(@PathVariable long id)
 	 {
-		 Airport airport = airportService.findById(id);
-
-		 if(airport != null)
-			 return airportMapper.airportToDto(airport);
-		 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		 Airport airport = airportService.findById(id)
+				 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		 return airportMapper.airportToDto(airport);
 	 }
 	 
 	 @PostMapping
@@ -68,8 +66,8 @@ public class AirportController {
 		 airport.setLid(id);
 		 AirportDto savedAirportDto = airportMapper.airportToDto(airportService.update(airport));
 
-		 return ResponseEntity.ok(savedAirportDto);
-		 		 
+		 if(savedAirportDto!= null) return ResponseEntity.ok(savedAirportDto);
+		 throw new ResponseStatusException(HttpStatus.NOT_FOUND);	 
 	 }
 	 
 
