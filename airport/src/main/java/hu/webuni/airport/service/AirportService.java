@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,12 +91,34 @@ public class AirportService {
 	 }
 	 
 	 @Transactional
-	 public void createFlight() {
+	 public void createFlight(String flightNumber, long takeoffAirportId, long landingAirportId, LocalDateTime takeoffDateTime) {
 		 Flight flight = new Flight();
-		 flight.setFlightNumber("A1234");
-		 flight.setTakeoff(airportRepository.findById(2L).get());
-		 flight.setLanding(airportRepository.findById(3L).get());
-		 flight.setTakeoffTime(LocalDateTime.of(2021,4,10,10,0,0));
+		 flight.setFlightNumber(flightNumber);
+		 flight.setTakeoff(airportRepository.findById(takeoffAirportId).get());
+		 flight.setLanding(airportRepository.findById(landingAirportId).get());
+		 flight.setTakeoffTime(takeoffDateTime);
 		 flightRepository.save(flight);
 	 }
+	 
+	 public List<Flight> findFlightsByExample(Flight example){
+		 
+		 long id = example.getId();
+		 String flightNumber = example.getFlightNumber();
+		 Airport landing = example.getLanding();
+		 String takeoffIata = null;
+		 Airport takeoff = example.getTakeoff();
+		 if(takeoff != null)
+			 takeoffIata = takeoff.getsIata();
+		 LocalDateTime takeoffTime = example.getTakeoffTime();
+		 
+		 Specification<Flight> spec = Specification.where(null);
+		 
+		 
+		 if(id > 0) {			 
+			spec = spec.and(FlightSpecifications.hasId(id));
+		 }
+	 
+		 return null;
+	 }
+	 
 }

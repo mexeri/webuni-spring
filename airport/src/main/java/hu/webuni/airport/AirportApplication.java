@@ -1,5 +1,7 @@
 package hu.webuni.airport;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +29,7 @@ public class AirportApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		airportService.createFlight();
+		airportService.createFlight("A1234", 2L, 3L, LocalDateTime.of(2021,4,10,10,0,0));
 		System.out.println(priceService.getFinalPrice(200));
 		System.out.println(priceService.getFinalPrice(20000));
 		
